@@ -1,0 +1,6 @@
+spring:
+  datasource:
+     name: dev
+     url: jdbc:mysql://localhost:3306/mamabike
+     username: root
+     password: 123456
