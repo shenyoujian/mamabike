@@ -127,6 +127,7 @@
 					<include>*.yml</include>
 					<include>*.properties</include>
 					<include>*.xml</include>
+					<include>enc_pri</include>
 				</includes>
 			</resource>
 		</resources>
