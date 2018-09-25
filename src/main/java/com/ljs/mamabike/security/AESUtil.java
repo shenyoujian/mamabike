@@ -64,20 +64,21 @@ public class AESUtil {
     public static void main(String[] args) throws Exception {
         /**AES加密数据，客户端操作开始**/
         String key = "123456789abcdefg";            //约定好的key
-        String result = "神游建";                    //传输的数据
+        String result = "{'mobile':'18319830032','code':'6666','platform':'android'}";
+        //传输的数据
         String enResult = encrypt(result, key);     //加密
         System.out.println(enResult);
         /**RSA加密AES的密钥,客户端操作结束**/
         byte[] enKey = RSAUtil.encryptByPublicKey(key.getBytes(), "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCEPB4Y7bd4ttV3phsm7VpR lmG0j19QUQWRG+MVCgw7f7ahvgwiXpwrqWP4hyZFxlFRUT4PlS11cKNut1Qm xjco1pYIxZUG6TfQj+a9rnUOGogdkyS76IpKi5/xal6MTmPqlfpE9SkBLvDc qLFX8FBo0+/ReoPrIPg3H4Saj99tOwIDAQAB");
-        System.out.println(new String(enKey, "utf-8"));
         //需要再转码不然在http传输会出问题，因为上面输出乱码
         String baseKey = Base64Util.encode(enKey);
+        System.out.println(baseKey);
 
-        /**服务端RSA解密AES的key**/
-        byte[] de = Base64Util.decode(baseKey);
-        byte[] deResultKey = RSAUtil.decryptByPrivateKey(de);
-        System.out.println(new String(deResultKey, "utf-8"));
-        String deResult = decrypt(enResult, key);       //服务端解密数据
-        System.out.println(deResult);
+//        /**服务端RSA解密AES的key**/
+//        byte[] de = Base64Util.decode(baseKey);
+//        byte[] deResultKey = RSAUtil.decryptByPrivateKey(de);
+//        System.out.println(new String(deResultKey, "utf-8"));
+//        String deResult = decrypt(enResult, key);       //服务端解密数据
+//        System.out.println(deResult);
     }
 }

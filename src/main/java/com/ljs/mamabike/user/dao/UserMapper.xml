@@ -12,6 +12,12 @@
   <sql id="Base_Column_List" >
     id, nickname, mobile, head_img, verify_flag, enable_flag
   </sql>
+  <select id="selectByMobile" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where mobile = #{mobile}
+  </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />

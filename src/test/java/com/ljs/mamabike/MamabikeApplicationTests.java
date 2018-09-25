@@ -4,8 +4,6 @@ import com.ljs.mamabike.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -34,15 +32,4 @@ public class MamabikeApplicationTests {
 		String result = restTemplate.getForObject("/user/hello",String.class);
 		System.out.println(result);
 	}
-
-	@Test
-	public void test(){
-		//Logger logger = LoggerFactory.getLogger(MamabikeApplicationTests.class);
-		try{
-			userService.login();
-		}catch (Exception e){
-			log.error("出错了", e);
-		}
-	}
-
 }

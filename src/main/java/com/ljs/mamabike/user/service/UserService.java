@@ -1,5 +1,8 @@
 package com.ljs.mamabike.user.service;
 
+import com.ljs.mamabike.common.exception.MaMaBikeException;
+import com.ljs.mamabike.user.entity.User;
+
 /**
  * @Author ljs
  * @Description TODO
@@ -7,5 +10,7 @@ package com.ljs.mamabike.user.service;
  **/
 public interface UserService {
 
-    String login();
+    String login(String data, String key) throws MaMaBikeException;
+
+    void modifyUsername(User user) throws MaMaBikeException;
 }

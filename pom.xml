@@ -111,6 +111,12 @@
 			<artifactId>lombok</artifactId>
 			<version>1.16.6</version>
 		</dependency>
+
+		<!--整合jedis-->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
