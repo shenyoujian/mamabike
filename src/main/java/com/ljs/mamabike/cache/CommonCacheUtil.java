@@ -1,12 +1,16 @@
 package com.ljs.mamabike.cache;
 
+import com.ljs.mamabike.common.exception.MaMaBikeException;
 import com.ljs.mamabike.user.entity.UserElement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
+
+import java.util.Map;
 
 /**
  * @Author ljs
@@ -116,6 +120,7 @@ public class CommonCacheUtil {
 
     /**
      * 登录时设置token
+     *
      * @param ue
      */
     public void putTokenWhenLogin(UserElement ue) {
@@ -144,5 +149,34 @@ public class CommonCacheUtil {
         }
     }
 
+    /**
+     * Author ljs
+     * Description 根据token获取缓存的用户
+     * Date 2018/9/25 21:23
+     **/
+    public UserElement getUserByToken(String token) throws MaMaBikeException {
+        UserElement ue = null;
+        JedisPool pool = jedisPoolWrapper.getJedisPool();
+        if (pool != null) {
+            //1.7支持try()括号里的内容在try之后自动关闭流或者资源,不用自动关闭
+            try (Jedis jedis = pool.getResource()) {
+                jedis.select(0);
+                //根据key从redis获取Map
+                try {
+                    Map<String, String> map = jedis.hgetAll(TOKEN_PREFIX + token);
+                    if (!CollectionUtils.isEmpty(map)) {
+                        //把map转对象
+                        ue = UserElement.fromMap(map);
+                    }else{
+                        log.warn("Fail to find cached element for token {}", token);
+                    }
 
+                } catch (Exception e) {
+                    log.error("Fail to get token from redis", e);
+                    throw new MaMaBikeException("Fail to get token content");
+                }
+            }
+        }
+        return ue;
+    }
 }

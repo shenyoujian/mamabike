@@ -14,6 +14,10 @@ public class Constants {
     public static final int RESP_STATUS_INTERNAL_ERROR = 500;
 
     public static final int RESP_STATUS_BADREQUEST = 400;
+
     /**状态码 end**/
+
+    /**用户token**/
+    public static final String REQUEST_TOKEN_KEY = "user-token";
 
 }

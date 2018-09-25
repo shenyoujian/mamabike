@@ -3,9 +3,11 @@ package com.ljs.mamabike.user.controller;
 import com.ljs.mamabike.common.constants.Constants;
 import com.ljs.mamabike.common.exception.MaMaBikeException;
 import com.ljs.mamabike.common.resp.ApiResult;
+import com.ljs.mamabike.common.rest.BaseController;
 import com.ljs.mamabike.user.dao.UserMapper;
 import com.ljs.mamabike.user.entity.LoginInfo;
 import com.ljs.mamabike.user.entity.User;
+import com.ljs.mamabike.user.entity.UserElement;
 import com.ljs.mamabike.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("user")
 @Slf4j
-public class UserController {
+public class UserController extends BaseController {
 
     @Autowired
     private UserMapper userMapper;
@@ -73,10 +75,18 @@ public class UserController {
         return resp;
     }
 
-
+    /**
+     * Author ljs
+     * Description 修改用户名字的接口
+     * Date 2018/9/25 21:41
+     **/
+    @RequestMapping("modifyusername")
     public ApiResult modifyUsername(@RequestBody User user){
         ApiResult resp = new ApiResult();
         try {
+            //根据token获取用户id
+            UserElement ue = getCurrenUser();
+            user.setId(ue.getUserId());
             userService.modifyUsername(user);
         } catch (MaMaBikeException e) {
             //校验失败
@@ -90,7 +100,6 @@ public class UserController {
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage("内部错误！");
         }
-
         return resp;
     }
 }
