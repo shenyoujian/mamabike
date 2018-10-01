@@ -20,4 +20,6 @@ public class Constants {
     /**用户token**/
     public static final String REQUEST_TOKEN_KEY = "user-token";
 
+    /**App版本,如果版本过低不给访问**/
+    public static final String REQUEST_VERSION_KEY = "version";
 }

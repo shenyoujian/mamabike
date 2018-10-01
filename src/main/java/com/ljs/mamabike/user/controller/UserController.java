@@ -80,14 +80,14 @@ public class UserController extends BaseController {
      * Description 修改用户名字的接口
      * Date 2018/9/25 21:41
      **/
-    @RequestMapping("modifyusername")
-    public ApiResult modifyUsername(@RequestBody User user){
+    @RequestMapping("modifyNickName")
+    public ApiResult modifyNickname(@RequestBody User user){
         ApiResult resp = new ApiResult();
         try {
             //根据token获取用户id
             UserElement ue = getCurrenUser();
             user.setId(ue.getUserId());
-            userService.modifyUsername(user);
+            userService.modifyNickName(user);
         } catch (MaMaBikeException e) {
             //校验失败
             log.error(e.getMessage());

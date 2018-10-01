@@ -12,5 +12,5 @@ public interface UserService {
 
     String login(String data, String key) throws MaMaBikeException;
 
-    void modifyUsername(User user) throws MaMaBikeException;
+    void modifyNickName(User user) throws MaMaBikeException;
 }

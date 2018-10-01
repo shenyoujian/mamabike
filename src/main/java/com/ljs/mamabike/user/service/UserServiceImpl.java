@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
      * Date 2018/9/25 16:30
      **/
     @Override
-    public void modifyUsername(User user) throws MaMaBikeException{
+    public void modifyNickName(User user) throws MaMaBikeException{
         userMapper.updateByPrimaryKeySelective(user);
     }
 
