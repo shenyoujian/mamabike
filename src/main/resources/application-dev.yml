@@ -5,6 +5,18 @@ spring:
      username: root
      password: 123456
 
+
+  #activeMQ
+  activemq:
+     broker-url: tcp://localhost:61616
+     pool:
+       enabled: false
+#springdata
+  data:
+     # mongoDB    #mongodb note:mongo3.x will not use host and port,only use uri
+    mongodb:
+      uri: mongodb://localhost:27017/mama-bike
+
 #reids
 redis:
     host: 127.0.0.1

@@ -167,7 +167,7 @@ public class CommonCacheUtil {
                     if (!CollectionUtils.isEmpty(map)) {
                         //把map转对象
                         ue = UserElement.fromMap(map);
-                    }else{
+                    } else {
                         log.warn("Fail to find cached element for token {}", token);
                     }
 
@@ -178,5 +178,84 @@ public class CommonCacheUtil {
             }
         }
         return ue;
+    }
+
+    /**
+     * Author ljs
+     * Description 缓存手机验证码专用 限制了发送次数
+     *
+     * @return 1 当前验证码未过期   2  手机号超过当前验证码次数上限  3、ip超过当日验证码上线
+     * Date 2018/10/2 15:57
+     **/
+    public int cacheForVerificationCode(String key, String verCode, String type, int second, String ip) throws MaMaBikeException {
+
+        try {
+            JedisPool pool = jedisPoolWrapper.getJedisPool();
+            if (pool != null) {
+                try (Jedis jedis = pool.getResource()) {
+                    jedis.select(0);
+                    /**ip次数判断**/
+                    String ipKey = "ip." + ip;
+                    if (ip == null) {
+                        return 3;
+                    } else {
+                        String ipSendCount = jedis.get(ipKey);
+                        try {
+                            if (ipSendCount != null && Integer.parseInt(ipSendCount) >= 10) {
+                                return 3;
+                            }
+                        } catch (NumberFormatException e) {
+                            log.error("Fail to process ip send count", e);
+                            return 3;
+                        }
+                    }
+
+                    /**验证码存储,被设置了返回0**/
+                    long succ = jedis.setnx(key, verCode);
+                    if (succ == 0) {
+                        return 1;
+                    }
+
+
+                    /**手机号次数判断**/
+                    String phoneCountKey = key + "." + type;
+                    String sendCount = jedis.get(phoneCountKey);
+                    try {
+                        if (sendCount != null && Integer.parseInt(sendCount) >= 10) {
+                            jedis.del(phoneCountKey);
+                            return 2;
+                        }
+                    } catch (NumberFormatException e) {
+                        log.error("Fail to process send count", e);
+                        jedis.del(key);
+                        return 2;
+                    }
+
+
+                    /**都没问题之后给三个key设置过期时间并且value+1**/
+                    try {
+                        jedis.expire(key, second);
+                        long val = jedis.incr(ipKey);
+                        /**该ip是第一次存储**/
+                        if (val == 1) {
+                            jedis.expire(ipKey, 86400);
+                        }
+
+                        val = jedis.incr(phoneCountKey);
+                        if (val == 1) {
+                            jedis.expire(phoneCountKey, 86400);
+                        }
+                    }catch (Exception e){
+                        log.error("Fail to cache data into redis", e);
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            log.error("Fail to cache for expiry", e);
+            throw new MaMaBikeException("Fail to cache for expiry");
+        }
+
+        return 0;
     }
 }

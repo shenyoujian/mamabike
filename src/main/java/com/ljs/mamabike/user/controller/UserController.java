@@ -14,10 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author ljs
@@ -99,6 +99,54 @@ public class UserController extends BaseController {
             log.error("Fail to modifyUsername", e);
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage("内部错误！");
+        }
+        return resp;
+    }
+
+
+
+    @RequestMapping(value = "/sendVercode")
+    public ApiResult<String> sendVercode(@RequestBody User user, HttpServletRequest request) {
+
+        ApiResult<String> resp = new ApiResult();
+
+        try {
+            userService.sendVercode(user.getMobile(), getIpFromRequest(request));
+        } catch (MaMaBikeException e) {
+            //发送失败
+            log.error(e.getMessage());
+            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+            resp.setMessage(e.getMessage());
+        } catch (Exception e) {
+            // 登录失败，返回失败信息,就不用返回data
+            // 记录日志
+            log.error("Fail to send smsVercode", e);
+            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+            resp.setMessage("内部错误！");
+        }
+        return resp;
+    }
+
+    /**
+     * Author ljs
+     * Description 用户更新头像
+     * Date 2018/10/4 14:43
+     **/
+    @RequestMapping(value = "/uploadHeadImg", method = RequestMethod.POST)
+    public ApiResult uploadHeadImg(HttpServletRequest request, MultipartFile file) throws MaMaBikeException{
+
+        ApiResult resp = new ApiResult();
+        try{
+            UserElement ue = getCurrenUser();
+            userService.uploadHeadImg(file, ue.getUserId());
+            resp.setMessage("上传成功");
+        }catch (MaMaBikeException e){
+            resp.setCode(e.getStatusCode());
+            resp.setMessage(e.getMessage());
+        } catch (Exception e) {
+            log.error("Fail to update user info", e);
+            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+            resp.setMessage("内部错误");
         }
         return resp;
     }

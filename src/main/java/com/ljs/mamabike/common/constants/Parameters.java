@@ -34,4 +34,13 @@ public class Parameters {
 
     @Value("#{'${security.noneSecurityPath}'.split(',')}")
     private List noneSecurityPath;
+
+    @Value("${db.collection}")
+    private String collection;
+
+    @Value("${db.limit}")
+    private int limit;
+
+    @Value("${db.maxDistance}")
+    private int maxDistance;
 }
